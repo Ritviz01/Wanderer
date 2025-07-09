@@ -17,8 +17,11 @@
                     </b>
                     <br>
                     <%= listing.description %> <br>
-                        <%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %>
+
+                        ₹ <%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %> <br>
+
                             <%= listing.location %> <br>
+
                                 <%= listing.country %>
 
 

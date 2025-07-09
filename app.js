@@ -7,8 +7,8 @@ const { log } = require("console");
 const methodOverride = require("method-override")
 const ejsMate = require('ejs-mate')
 const wrapAsync = require("./utils/wrapAsync.js")
-// const ExpressError = require("./utils/ExpressError.js")
-// const { listingSchema } = require("./schema.js")
+const ExpressError = require("./utils/ExpressError.js")
+const { listingSchema } = require("./schema.js")
 
 let MONGO_URL = 'mongodb://127.0.0.1:27017/wanderer' //basic
 
@@ -36,6 +36,20 @@ app.use(express.static(path.join(__dirname, '/public')))
 app.get("/", (req, res) => {     //basic
     res.send("Hi")     //basic
 })
+
+const validateListing = (req, res, next) => {
+    let { error } = listingSchema.validate(req.body);
+
+    if (error) {
+        throw new ExpressError(400, error); //joi givin error here
+    } else {
+        next();
+    }
+
+
+}
+
+
 
 
 
@@ -67,25 +81,11 @@ app.get("/listings/:id", wrapAsync(async (req, res) => {
     res.render("listings/show.ejs", { listing })
 }))
 
-const ExpressError = require("./utils/ExpressError");
-const { listingSchema } = require("./schema");
-
-module.exports = (req, res, next) => {
-    const { error } = listingSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, msg);
-    } else {
-        next();
-    }
-};
 
 
 
 //create route = Read 
-app.post("/listings", wrapAsync(async (req, res, next) => {
-    let result = listingSchema.validate(req.body);
-    console.log(result);
+app.post("/listings", validateListing, wrapAsync(async (req, res, next) => {
 
     const newListing = new Listing(req.body.listing)
     await newListing.save();
@@ -103,7 +103,7 @@ app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
 }))
 
 //update route
-app.put("/listings/:id", wrapAsync(async (req, res) => {
+app.put("/listings/:id", validateListing, wrapAsync(async (req, res) => {
     if (!req.body.listing) {
         throw new ExpressError(400, "Enter the valid data for listing")
     }
