@@ -1,16 +1,18 @@
-const express = require("express")     //basic
+const express = require("express")
 const app = express();                 //basic
 const mongoose = require("mongoose")   //basic
-const Listing = require("./models/listing.js")
 const path = require('path');
-const { log } = require("console");
 const methodOverride = require("method-override")
 const ejsMate = require('ejs-mate')
-const wrapAsync = require("./utils/wrapAsync.js")
 const ExpressError = require("./utils/ExpressError.js")
-const { listingSchema, reviewSchema } = require("./schema.js")
-const Review = require("./models/review.js");
+const session = require("express-session")
+const flash = require("connect-flash")
+const lisitngs = require("./routes/listing.js");
+const reviews = require("./routes/review.js")
+
 let MONGO_URL = 'mongodb://127.0.0.1:27017/wanderer' //basic
+
+
 
 main() //basic
     .then(() => {      //basic
@@ -33,135 +35,30 @@ app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, '/public')))
 
+const sessionOptions = {
+    secret: "mysuprasecret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+    }
+}
 app.get("/", (req, res) => {     //basic
     res.send("Hi")     //basic
 })
 
-const validateListing = (req, res, next) => {
-    let { error } = listingSchema.validate(req.body);
+app.use(session(sessionOptions))//express session : use cookies to make the site sort of stateful
+app.use(flash())//used to display some messages for a some milli second
 
-    if (error) {
-        throw new ExpressError(400, error); //joi givin error here
-    } else {
-        next();
-    }
-
-
-}
-
-
-const validateReview = (req, res, next) => {
-    let { error } = reviewSchema.validate(req.body);
-
-    if (error) {
-        throw new ExpressError(400, error); //joi givin error here
-    } else {
-        next();
-    }
-
-
-}
-
-
-
-
-//Index Route
-
-app.get('/listings', wrapAsync(async (req, res) => {
-    const allListings = await Listing.find({})
-    res.render("listings/index.ejs", { allListings })
-
-}))
-
-//create route
-app.get('/listings/new', (req, res) => {
-    res.render('listings/new.ejs')
-
+app.use((req, res, next) => {
+    res.locals.success = req.flash("success");
+     res.locals.error = req.flash("error");
+    next();
 })
-
-//new route = Read
-app.get("/listings/new", (req, res) => {
-    res.render('listings/new.ejs')
-})
-
-
-
-//show route 
-app.get("/listings/:id", wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews")
-    res.render("listings/show.ejs", { listing })
-}))
-
-
-
-
-//create route = Read 
-app.post("/listings", validateListing, wrapAsync(async (req, res, next) => {
-
-    const newListing = new Listing(req.body.listing)
-    await newListing.save();
-    res.redirect('/listings')
-
-
-
-}))
-
-//edit route
-app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    const listing = await Listing.findById(id)
-    res.render("listings/edit.ejs", { listing })
-}))
-
-//update route
-app.put("/listings/:id", validateListing, wrapAsync(async (req, res) => {
-    if (!req.body.listing) {
-        throw new ExpressError(400, "Enter the valid data for listing")
-    }
-    let { id } = req.params;
-    await Listing.findByIdAndUpdate(id, { ...req.body.listing })
-    res.redirect(`/listings/${id}`);
-}))
-
-//delete route
-app.delete("/listings/:id", wrapAsync(async (req, res) => {
-
-    let { id } = req.params;
-    let deleteListing = await Listing.findByIdAndDelete(id)
-    console.log(deleteListing);
-    res.redirect('/listings')
-
-}))
-
-//reviews
-//post review route
-app.post("/listings/:id/reviews", validateReview, wrapAsync(async (req, res) => {
-    let listing = await Listing.findById(req.params.id)
-    let newReview = new Review(req.body.review)
-
-    listing.reviews.push(newReview);
-    await newReview.save();
-    await listing.save();
-
-    console.log("new review saved");
-
-
-    res.redirect(`/listings/${listing._id}`)
-
-}))
-
-//delete review route
-app.delete("/listings/:id/reviews/:reviewId",wrapAsync(async(req,res)=>{
-    let{id,reviewId}=req.params; 
-    await Listing.findByIdAndUpdate(id,{ $pull:  { reviews: reviewId }})
-    await Review.findByIdAndDelete(reviewId);
-
-    res.redirect(`/listings/${id}`)
-}))
-
-
-
+app.use('/listings', lisitngs);
+app.use('/listings/:id/reviews', reviews)
 
 
 app.all(/^.*$/, (req, res, next) => {
@@ -173,9 +70,6 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render("error.ejs", { message })
     // res.status(statusCode).send(message);
 });
-
-
-
 
 
 app.listen(8080, () => {   //basic
