@@ -1,2 +1,5 @@
+#files 
+node_modules/
+
+#enviorments
 .env
-node_modules
