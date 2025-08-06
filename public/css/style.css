@@ -131,17 +131,29 @@ body {
     padding-right: 0;
 }
 
-.heading{
-  text-align: center!important;
+.heading {
+    text-align: center !important;
     margin-top: 40px !important;
-    font-weight: 700!important;
+    font-weight: 700 !important;
 }
+
 .form-container {
-    text-align: left!important;
-    max-width: 500px!important;
-    margin: 40px auto!important;
-    padding: 20px!important;
-    background-color: white!important;
-    border-radius: 10px!important;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1)!important;
+    text-align: left !important;
+    max-width: 500px !important;
+    margin: 40px auto !important;
+    padding: 20px !important;
+    background-color: white !important;
+    border-radius: 10px !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Map */
+#map {
+    height: 400px;
+    width: 85vh;
+}
+
+.originalImage {
+    height: 150px;
+    width: 150px;
 }

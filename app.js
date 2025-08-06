@@ -57,9 +57,6 @@ const sessionOptions = {
         httpOnly: true,
     }
 }
-app.get("/", (req, res) => {         //basic
-    res.send("Hi")                  //basic
-})
 
 app.use(session(sessionOptions))   //express session : use cookies to make the site sort of stateful
 app.use(flash())                  //used to display some messages for a some milli second

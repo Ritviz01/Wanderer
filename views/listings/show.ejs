@@ -1,6 +1,9 @@
 <% layout('/layouts/boilerplate') -%>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script>
+        const mapToken = "<%= process.env.MAP_TOKEN %>";
+        const listing = <%- JSON.stringify(listing) %>
+    </script>
+
 
     <div class="row">
         <div class="col-8 offset-3 mt-3">
@@ -60,8 +63,9 @@
         <% } %>
 
             <div class="col-8 offset-3 mt-3 mb-3">
-                <hr>
+
                 <% if(currUser ) { %>
+                    <hr>
                     <h4>Leave a Review</h4>
                     <form action="/listings/<%=listing.id%>/reviews" method="post" novalidate class="needs-validation">
 
@@ -94,34 +98,39 @@
                     <% } %>
 
 
-                        <p><b>All Reviews</b></p>
-                        <div class="row">
-                            <% for (review of listing.reviews) { %>
-                                <div class="card col-5 ms-3 mb-3">
-                                    <div class="card-body">
-                                        <h5 class="card-title mt-2">
-                                            <%= review.author.username %>
-                                                <b>
-                                                    <p class="starability-result card-text"
-                                                        data-rating="<%= review.rating %>">
-                                                        stars
-                                                    </p>
-                                                </b>
-                                        </h5>
-                                        <p class="card-text">
-                                            <%= review.comment %>
-                                        </p>
+                        <% if(listing.reviews.length> 0) { %>
+                            <div class="row">
+                                <p><b>All Reviews</b></p>
+                                <% for (review of listing.reviews) { %>
+                                    <div class="card col-5 ms-3 mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title mt-2">
+                                                <%= review.author.username %>
+                                                    <b>
+                                                        <p class="starability-result card-text"
+                                                            data-rating="<%= review.rating %>">
+                                                            stars
+                                                        </p>
+                                                    </b>
+                                            </h5>
+                                            <p class="card-text">
+                                                <%= review.comment %>
+                                            </p>
+
+                                        </div>
+                                        <form
+                                            action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=Delete"
+                                            class="mb-3" method="post">
+                                            <button class="btn btn-dark">delete</button>
+                                        </form>
 
                                     </div>
-                                    <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=Delete"
-                                        class="mb-3" method="post">
-                                        <button class="btn btn-dark">delete</button>
-                                    </form>
-
+                                    <% } %>
+                            </div>
+                            <% } %>
+                                <div class="col-8  mb-3 ">
+                                    <h4>Where you'll be</h4>
+                                    <div id="map"></div>
                                 </div>
-                                <% } %>
-                        </div>
-
-
-
             </div>
+            <script src="/js/map.js"></script>
