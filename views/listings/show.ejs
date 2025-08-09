@@ -50,13 +50,10 @@
     </div>
     <% if(currUser && currUser._id.equals(listing.owner._id)) { %>
         <!--curr user hona chahiye agr hai toh kya woh listing owner ke baraabar hai ki nahi  -->
-        <div>
-            <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark  offset-3 edit-btn">Edit</a>
-
-
+        <div class="deledit">
+            <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark  offset-3 edit-btn ">Edit</a>
             <form method="post" action="/listings/<%=listing._id%>?_method=delete">
-                <br>
-                <button class="btn btn-dark offset-3">Delete</button>
+                <button class="btn btn-dark offset-3 delete-btn">Delete</button>
             </form>
 
         </div>
@@ -92,7 +89,7 @@
                                 required></textarea>
                             <div class="invalid-feedback"> Please add Some comments with reviews</div>
                         </div>
-                        <button class="btn btn-outline-dark mt-2"> Submit </button>
+                        <button class="btn btn-outline-dark mt-2 sub-btn"> Submit </button>
                     </form>
                     <hr>
                     <% } %>

@@ -1,4 +1,17 @@
 <% layout('/layouts/boilerplate') -%>
+    <style>
+        .signupbtn {
+            background-color: #FF7F50;
+            color: #fff;
+            transition: border-radius 0.5s ease;
+        }
+
+        .signupbtn:hover {
+            background-color: #FF7F50;
+            color: #fff;
+            border-radius: 5rem;
+        }
+    </style>
 
     <div class="heading">
         <h1> ✍️ 🆙 🔛 Wanderer </h1>
@@ -20,7 +33,7 @@
                     <lable for="password" class="form-label">Password</lable>
                     <input type="password" name="password" class="form-control" required>
                 </div>
-                <button class="btn btn-success"> ✍️🆙</button>
+                <button class="btn signupbtn"> ✍️🆙</button>
 
 
 

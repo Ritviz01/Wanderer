@@ -1,5 +1,18 @@
 <% layout('/layouts/boilerplate') -%>
 
+    <style>
+        .loginbtn {
+            background-color: #FF7F50;
+            color: #fff;
+            transition: border-radius 0.5s ease;
+        }
+
+        .loginbtn:hover {
+            background-color: #FF7F50;
+            color: #fff;
+            border-radius: 5rem;
+        }
+    </style>
     <div class="heading">
         <h1> Log In To Wanderer </h1>
         <div class="form-container">
@@ -16,7 +29,7 @@
                     <lable for="password" class="form-label">Password</lable>
                     <input type="password" name="password" class="form-control" required>
                 </div>
-                <button class="btn btn-success"> Log In</button>
+                <button class="btn   loginbtn"> Log In</button>
 
 
 

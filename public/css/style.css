@@ -14,8 +14,8 @@ body {
     background-color: white;
 }
 
-.fa-compass {
-    color: #fe424d;
+.fa-weebly {
+    color: #FF7F50;
     font-size: 2rem;
 }
 
@@ -97,22 +97,19 @@ body {
 /* New Page */
 
 .add-btn {
-    background-color: #fe424d !important;
-    border: none !important;
-    color: white !important;
-
-
+    background-color: #FF7F50 !important;
+    color: #fff !important;
+    transition: border-radius 0.5s ease !important;
 }
 
-/*  Edit Page */
-
-.edit-btn {
-    background-color: #fe424d !important;
-    border: none !important;
-    color: white !important;
-
-
+.add-btn:hover {
+    background-color: #FF7F50 !important;
+    color: #fff !important;
+    border-radius: 5rem !important;
 }
+
+
+
 
 /* show page */
 
@@ -145,6 +142,52 @@ body {
     background-color: white !important;
     border-radius: 10px !important;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+/*  Edit Page +Show page*/
+
+.deledit {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center;
+    display: row !important;
+}
+
+.edit-btn {
+
+    background-color: #FF7F50 !important;
+    border: none !important;
+    color: white !important;
+    transition: border-radius 0.5s ease !important;
+
+}
+
+.edit-btn:hover {
+    background-color: #FF7F50;
+    color: #fff;
+    border-radius: 3rem;
+}
+
+.delete-btn {
+    border: none !important;
+    color: white !important;
+    transition: border-radius 0.5s ease !important;
+
+}
+
+.delete-btn:hover {
+    border: none !important;
+    color: white !important;
+    border-radius: 5rem;
+
+}
+
+.sub-btn {
+    transition: border-radius 0.5s ease !important;
+}
+
+.sub-btn:hover {
+    border-radius: 5rem;
 }
 
 /* Map */

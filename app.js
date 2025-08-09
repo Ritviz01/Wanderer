@@ -11,6 +11,7 @@ const methodOverride = require("method-override")
 const ejsMate = require('ejs-mate')
 const ExpressError = require("./utils/ExpressError.js")
 const session = require("express-session")
+const MongoStore = require('connect-mongo');
 const flash = require("connect-flash")
 
 const lisitngsRouter = require("./routes/listing.js");
@@ -23,20 +24,20 @@ const passport = require("passport")
 const localStrategy = require('passport-local')
 const User = require("./models/user.js")
 
-let MONGO_URL = 'mongodb://127.0.0.1:27017/wanderer' //basic
+//let MONGO_URL = 'mongodb://127.0.0.1:27017/wanderer'  
+const dbUrl = process.env.ATLASDB_URL;
 
 
-
-main() //basic
-    .then(() => {      //basic
-        console.log('connected to DB');  //basic
+main()
+    .then(() => {
+        console.log('connected to DB');
     })
-    .catch((err) => {  //basic
-        console.log(err);  //basic 
+    .catch((err) => {
+        console.log(err);
     })
 
-async function main() {   //basic
-    await mongoose.connect(MONGO_URL)   //basic
+async function main() {
+    await mongoose.connect(dbUrl)
 }
 
 app.set('views', path.join(__dirname, 'views'))
@@ -46,10 +47,26 @@ app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, '/public')))
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    crypto: {
+        secret: process.env.SECRET,
+
+    },
+    touchAfter: 24 * 3600,
+})
+
+
+
+store.on("error", () => {
+    console.log("ERROR in mongo sesssion Store");
+
+})
 
 const sessionOptions = {
-    secret: "mysuprasecret",
-    resave: false,
+    store,
+    secret: process.env.SECRET,
+    resave: false,  
     saveUninitialized: true,
     cookie: {
         expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
@@ -57,6 +74,8 @@ const sessionOptions = {
         httpOnly: true,
     }
 }
+
+
 
 app.use(session(sessionOptions))   //express session : use cookies to make the site sort of stateful
 app.use(flash())                  //used to display some messages for a some milli second
@@ -75,15 +94,6 @@ app.use((req, res, next) => {
     next();
 })
 
-app.get('/demouser', async (req, res) => {
-    let fakeUser = new User({
-        email: "Student@gmail.com",
-        username: "kutta singh",
-    })
-    let registeredUser = await User.register(fakeUser, "helloworld") //register method  used for passing new user instance and password it also checks that username is unique or not
-    res.send(registeredUser);
-
-})
 
 
 
@@ -103,7 +113,7 @@ app.use((err, req, res, next) => {
 });
 
 
-app.listen(8080, () => {   //basic
+app.listen(8080, () => {   //b a s i c
     console.log("server is listening to port 8080");   //basic
 
 })
