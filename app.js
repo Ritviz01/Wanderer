@@ -66,7 +66,7 @@ store.on("error", () => {
 const sessionOptions = {
     store,
     secret: process.env.SECRET,
-    resave: false,  
+    resave: false,
     saveUninitialized: true,
     cookie: {
         expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
@@ -98,6 +98,7 @@ app.use((req, res, next) => {
 
 
 app.use('/listings', lisitngsRouter);
+app.use('/', lisitngsRouter);
 app.use('/listings/:id/reviews', reviewsRouter)
 app.use('/', userRouter)
 
