@@ -24,7 +24,7 @@ const passport = require("passport")
 const localStrategy = require('passport-local')
 const User = require("./models/user.js")
 
-//let MONGO_URL = 'mongodb://127.0.0.1:27017/wanderer'  
+let MONGO_URL = 'mongodb://127.0.0.1:27017/wanderer'  
 const dbUrl = process.env.ATLASDB_URL;
 
 
